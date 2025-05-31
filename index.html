@@ -1,11 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <title>TestEvent</title>
+  <meta charset="UTF-8" />
+  <title>事件发送示例</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    input {
+      display: block;
+      margin-bottom: 10px;
+      padding: 8px;
+      width: 200px;
+    }
+    button {
+      padding: 8px 16px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Welcome to TestEvent</h1>
-    <p>This is a simple HTML page for testing purposes.</p>
+
+  <label for="eventName">事件名称</label>
+  <input type="text" id="eventName" placeholder="请输入事件名称" />
+
+  <label for="eventValue">事件值</label>
+  <input type="text" id="eventValue" placeholder="请输入事件值" />
+
+  <button onclick="sendEvent()">发送</button>
+
+
+
+  <label for="tcEventName_label">天成事件</label>
+  <label for="tcEentName">事件名称</label>
+  <input type="text" id="tcEventName" placeholder="请输入事件名称" />
+
+  <label for="tcEventValue">事件值</label>
+  <input type="text" id="tcEventValue" placeholder="请输入事件值" />
+
+  <button onclick="sendTCEvent()">发送</button>
+
+  <script>
+    function sendEvent() {
+      const name = document.getElementById("eventName").value;
+      const value = document.getElementById("eventValue").value;
+      window.jsBridge.postMessage(name,value);
+    }
+
+
+    function sendTcEvent() {
+      const name = document.getElementById("tcEventName").value;
+      const value = document.getElementById("tcEventValue").value;
+      window.Android.eventTracker(name,value);
+    }
+  </script>
+
 </body>
 </html>
