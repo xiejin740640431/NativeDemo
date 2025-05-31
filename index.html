@@ -2,48 +2,79 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8" />
-  <title>事件发送示例</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>事件发送</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       padding: 20px;
+      margin: 0;
+      background-color: #f9f9f9;
+    }
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      font-size: 16px;
+      margin-top: 10px;
+      display: block;
     }
     input {
-      display: block;
-      margin-bottom: 10px;
-      padding: 8px;
-      width: 200px;
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      margin-bottom: 16px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
     }
     button {
-      padding: 8px 16px;
+      width: 100%;
+      padding: 12px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
     }
   </style>
 </head>
 <body>
 
-  <label for="eventName">事件名称</label>
-  <input type="text" id="eventName" placeholder="请输入事件名称" />
+  <div class="container">
+    <label for="eventName">事件名称</label>
+    <input type="text" id="eventName" placeholder="请输入事件名称" />
 
-  <label for="eventValue">事件值</label>
-  <input type="text" id="eventValue" placeholder="请输入事件值" />
+    <label for="eventValue">事件值</label>
+    <input type="text" id="eventValue" placeholder="请输入事件值" />
 
-  <button onclick="sendEvent()">发送</button>
+    <button onclick="sendEvent()">发送</button>
 
 
+      <label for="tcEventName_label">天成事件</label>
+      <label for="tcEentName">事件名称</label>
+      <input type="text" id="tcEventName" placeholder="请输入事件名称" />
 
-  <label for="tcEventName_label">天成事件</label>
-  <label for="tcEentName">事件名称</label>
-  <input type="text" id="tcEventName" placeholder="请输入事件名称" />
+      <label for="tcEventValue">事件值</label>
+      <input type="text" id="tcEventValue" placeholder="请输入事件值" />
 
-  <label for="tcEventValue">事件值</label>
-  <input type="text" id="tcEventValue" placeholder="请输入事件值" />
-
-  <button onclick="sendTCEvent()">发送</button>
+      <button onclick="sendTCEvent()">发送</button>
+  </div>
 
   <script>
     function sendEvent() {
-      const name = document.getElementById("eventName").value;
-      const value = document.getElementById("eventValue").value;
+      const name = document.getElementById("eventName").value.trim();
+      const value = document.getElementById("eventValue").value.trim();
       window.jsBridge.postMessage(name,value);
     }
 
