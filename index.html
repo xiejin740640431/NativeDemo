@@ -153,7 +153,7 @@
 
 
     function sendTcEvent() {
-      if (window.jsBridge) {
+      if (window.Android) {
 	      const name = document.getElementById("tcEventName").value.trim();
 	      const value = document.getElementById("tcEventValue").value.trim();
 	      window.Android.eventTracker(name, value);
