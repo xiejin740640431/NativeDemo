@@ -77,7 +77,6 @@
       color: white;
       font-size: 16px;
       border: none;
-      border-radius: 8px;
       cursor: pointer;
     }
     button:hover {
@@ -100,8 +99,8 @@
       <label for="eventValue">事件值</label>
       <input type="text" id="eventValue" placeholder="请输入事件值" />
       <label id="error_message" style="color: #FF0000;margin-bottom: 10px;"></label>
-      <button onclick="sendEvent()">发送</button>
-      <button onclick="fillAoumtParam()" style="margin-top: 10px;">填充金额参数</button>
+      <button onclick="sendEvent()" style="border-radius: 8px;">发送</button>
+      <button onclick="fillAoumtParam()" style="margin-top: 10px;border-radius: 8px;">填充金额参数</button>
     </div>
 
     <div id="tab-tc" class="tab-content">
@@ -113,9 +112,9 @@
 
       <label id="tc_error_message" style="color: #FF0000;margin-bottom: 10px;"></label>
 
-      <button onclick="sendTcEvent()">发送</button>
+      <button onclick="sendTcEvent()" style="border-radius: 8px;">发送</button>
 
-      <button onclick="fillTCAoumtParam()" style="margin-top: 10px;">填充金额参数</button>
+      <button onclick="fillTCAoumtParam()" style="margin-top: 10px;border-radius: 8px;">填充金额参数</button>
     </div>
   </div>
 
