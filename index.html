@@ -99,8 +99,9 @@
 
       <label for="eventValue">事件值</label>
       <input type="text" id="eventValue" placeholder="请输入事件值" />
-
+      <label id="error_message" style="color: #FF0000;margin-bottom: 10px;"></label>
       <button onclick="sendEvent()">发送</button>
+      <button onclick="fillAoumtParam()" style="margin-top: 10px;">填充金额参数</button>
     </div>
 
     <div id="tab-tc" class="tab-content">
@@ -110,7 +111,11 @@
       <label for="tcEventValue">事件值</label>
       <input type="text" id="tcEventValue" placeholder="请输入事件值" />
 
+      <label id="tc_error_message" style="color: #FF0000;margin-bottom: 10px;"></label>
+
       <button onclick="sendTcEvent()">发送</button>
+
+      <button onclick="fillTCAoumtParam()" style="margin-top: 10px;">填充金额参数</button>
     </div>
   </div>
 
@@ -133,15 +138,34 @@
     }
 
     function sendEvent() {
-      const name = document.getElementById("eventName").value.trim();
-      const value = document.getElementById("eventValue").value.trim();
-      window.jsBridge.postMessage(name, value);
+      if (window.jsBridge) {
+	      const name = document.getElementById("eventName").value.trim();
+	      const value = document.getElementById("eventValue").value.trim();
+	      window.jsBridge.postMessage(name, value);
+		  document.getElementById("error_message").innerText = '';
+		} else {
+		  document.getElementById("error_message").innerText = 'jsBridge对象不存在';
+		}
     }
 
+    function fillAoumtParam(){
+    	document.getElementById("eventValue").value = '{"amount":100,"currency":"USD"}';
+    }
+
+
     function sendTcEvent() {
-      const name = document.getElementById("tcEventName").value.trim();
-      const value = document.getElementById("tcEventValue").value.trim();
-      window.Android.eventTracker(name, value);
+      if (window.jsBridge) {
+	      const name = document.getElementById("tcEventName").value.trim();
+	      const value = document.getElementById("tcEventValue").value.trim();
+	      window.Android.eventTracker(name, value);
+		  document.getElementById("tc_error_message").innerText = '';
+  	  }else{
+		  document.getElementById("tc_error_message").innerText = 'Android对象不存在';
+  	  }
+    }
+
+    function fillTCAoumtParam(){
+    	document.getElementById("tcEventValue").value = '{"af_revenue":1000,"revenue":1000,"currency":"USD"}';
     }
   </script>
 
