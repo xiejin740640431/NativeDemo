@@ -35,7 +35,7 @@
       background-color: #eee;
       border: none;
       outline: none;
-      color: #666; /* 未激活时为灰色 */
+      color: #666;
       transition: background-color 0.3s, color 0.3s;
     }
 
@@ -43,7 +43,7 @@
       background-color: #4CAF50;
       font-weight: bold;
       border-bottom: 2px solid #4CAF50;
-      color: white; /* 激活时为绿色 */
+      color: white;
     }
 
     .tab-content {
@@ -82,6 +82,109 @@
     button:hover {
       background-color: #45a049;
     }
+    
+    .event-buttons-container {
+      margin-top: 15px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    .event-buttons-scroll {
+      display: inline-flex;
+      gap: 8px;
+      padding: 5px 0;
+    }
+    
+    .event-btn {
+      flex-shrink: 0;
+      padding: 8px 12px;
+      background-color: #f0f0f0;
+      color: #333;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.2s, border-color 0.2s;
+      width: auto;
+    }
+    
+    .event-btn:hover {
+      background-color: #e0e0e0;
+      border-color: #ccc;
+    }
+    
+    .event-btn:active {
+      background-color: #d0d0d0;
+    }
+    
+    .log-container {
+      margin-top: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      max-height: 200px;
+      overflow: hidden;
+    }
+    
+    .log-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 15px;
+      background-color: #e9e9e9;
+      border-bottom: 1px solid #ddd;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    
+    .clear-log-btn {
+      background-color: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      width: auto;
+    }
+    
+    .clear-log-btn:hover {
+      background-color: #ff5252;
+    }
+    
+    .log-content {
+      padding: 10px 15px;
+      max-height: 150px;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    
+    .log-item {
+      margin-bottom: 5px;
+      padding: 3px 0;
+    }
+    
+    .log-item.success {
+      color: #4CAF50;
+    }
+    
+    .log-item.error {
+      color: #f44336;
+    }
+    
+    .log-item.info {
+      color: #2196F3;
+    }
+    
+    .log-item.complete {
+      color: #FF9800;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -101,6 +204,21 @@
       <label id="error_message" style="color: #FF0000;margin-bottom: 10px;"></label>
       <button onclick="sendEvent()" style="border-radius: 8px;">发送</button>
       <button onclick="fillAoumtParam()" style="margin-top: 10px;border-radius: 8px;">填充金额参数</button>
+      <button onclick="autoSendAllEvents()" style="margin-top: 10px;border-radius: 8px;background-color: #2196F3;">自动发送所有事件</button>
+      
+      <div class="event-buttons-container">
+        <div class="event-buttons-scroll" id="normal-event-buttons">
+          <!-- 按钮将通过JavaScript动态生成 -->
+        </div>
+      </div>
+      
+      <div class="log-container" id="normal-log-container" style="display: none;">
+        <div class="log-header">
+          <span>发送日志</span>
+          <button onclick="clearLog('normal')" class="clear-log-btn">清空</button>
+        </div>
+        <div class="log-content" id="normal-log-content"></div>
+      </div>
     </div>
 
     <div id="tab-tc" class="tab-content">
@@ -115,10 +233,162 @@
       <button onclick="sendTcEvent()" style="border-radius: 8px;">发送天成事件</button>
 
       <button onclick="fillTCAoumtParam()" style="margin-top: 10px;border-radius: 8px;">填充金额参数</button>
+      <button onclick="autoSendAllTcEvents()" style="margin-top: 10px;border-radius: 8px;background-color: #2196F3;">自动发送所有天成事件</button>
+      
+      <div class="event-buttons-container">
+        <div class="event-buttons-scroll" id="tc-event-buttons">
+          <!-- 按钮将通过JavaScript动态生成 -->
+        </div>
+      </div>
+      
+      <div class="log-container" id="tc-log-container" style="display: none;">
+        <div class="log-header">
+          <span>发送日志</span>
+          <button onclick="clearLog('tc')" class="clear-log-btn">清空</button>
+        </div>
+        <div class="log-content" id="tc-log-content"></div>
+      </div>
     </div>
   </div>
 
   <script>
+    // 统一的事件数据定义
+    const eventsConfig = {
+      normal: [
+        { name: 'adjustId', params: '{"adjustId": "test123"}' },
+        { name: 'enterGame', params: '{"gameId": "game001", "level": 1}' },
+        { name: 'firstrecharge', params: '{"amount": 100, "currency": "USD"}' },
+        { name: 'login', params: '{"userId": "user123", "method": "email"}' },
+        { name: 'logout', params: '{"userId": "user123"}' },
+        { name: 'recharge', params: '{"amount": 50, "currency": "USD", "method": "card"}' },
+        { name: 'rechargeClick', params: '{"buttonId": "recharge_btn", "page": "payment"}' },
+        { name: 'register', params: '{"method": "email", "source": "app"}' },
+        { name: 'registerClick', params: '{"buttonId": "register_btn", "page": "signup"}' },
+        { name: 'firstOpen', params: '{"version": "1.0.0", "platform": "android"}' },
+        { name: 'registerSubmit', params: '{"email": "test@example.com", "success": true}' },
+        { name: 'depositSubmit', params: '{"amount": 200, "currency": "USD", "method": "bank"}' },
+        { name: 'firstDeposit', params: '{"amount": 100, "currency": "USD", "method": "card"}' },
+        { name: 'withdraw', params: '{"amount": 50, "currency": "USD", "method": "bank"}' },
+        { name: 'firstDepositArrival', params: '{"amount": 100, "currency": "USD", "status": "success"}' },
+        { name: 'startTrial', params: '{"trialType": "premium", "duration": "7days"}' },
+        { name: 'deposit', params: '{"amount": 300, "currency": "USD", "method": "card"}' },
+        { name: 'redeposit', params: '{"amount": 150, "currency": "USD", "method": "card", "isReturn": true}' }
+      ],
+      tc: [
+        { name: 'adjustId', params: '{"adjustId": "test123"}' },
+        { name: 'enterGame', params: '{"gameId": "game001", "level": 1}' },
+        { name: 'firstrecharge', params: '{"af_revenue": 100, "revenue": 100, "currency": "USD"}' },
+        { name: 'login', params: '{"userId": "user123", "method": "email"}' },
+        { name: 'logout', params: '{"userId": "user123"}' },
+        { name: 'recharge', params: '{"af_revenue": 50, "revenue": 50, "currency": "USD", "method": "card"}' },
+        { name: 'rechargeClick', params: '{"buttonId": "recharge_btn", "page": "payment"}' },
+        { name: 'register', params: '{"method": "email", "source": "app"}' },
+        { name: 'registerClick', params: '{"buttonId": "register_btn", "page": "signup"}' },
+        { name: 'firstOpen', params: '{"version": "1.0.0", "platform": "android"}' },
+        { name: 'registerSubmit', params: '{"email": "test@example.com", "success": true}' },
+        { name: 'depositSubmit', params: '{"af_revenue": 200, "revenue": 200, "currency": "USD", "method": "bank"}' },
+        { name: 'firstDeposit', params: '{"af_revenue": 100, "revenue": 100, "currency": "USD", "method": "card"}' },
+        { name: 'withdraw', params: '{"amount": 50, "currency": "USD", "method": "bank"}' },
+        { name: 'firstDepositArrival', params: '{"af_revenue": 100, "revenue": 100, "currency": "USD", "status": "success"}' },
+        { name: 'startTrial', params: '{"trialType": "premium", "duration": "7days"}' },
+        { name: 'deposit', params: '{"af_revenue": 300, "revenue": 300, "currency": "USD", "method": "card"}' },
+        { name: 'redeposit', params: '{"af_revenue": 150, "revenue": 150, "currency": "USD", "method": "card", "isReturn": true}' }
+      ]
+    };
+
+    // 统一的按钮生成函数
+    function generateEventButtons() {
+      Object.keys(eventsConfig).forEach(type => {
+        const container = document.getElementById(`${type}-event-buttons`);
+        if (container) {
+          container.innerHTML = '';
+          eventsConfig[type].forEach(event => {
+            const button = document.createElement('button');
+            button.className = 'event-btn';
+            button.textContent = event.name;
+            button.onclick = () => fillEventData(event.name, event.params, type);
+            container.appendChild(button);
+          });
+        }
+      });
+    }
+
+    // 填充事件数据
+    function fillEventData(eventName, eventParams, type) {
+      const nameField = type === 'normal' ? 'eventName' : 'tcEventName';
+      const valueField = type === 'normal' ? 'eventValue' : 'tcEventValue';
+      
+      document.getElementById(nameField).value = eventName;
+      document.getElementById(valueField).value = eventParams;
+    }
+
+    // 统一的自动发送函数
+    function autoSendEvents(type) {
+      const events = eventsConfig[type];
+      let currentIndex = 0;
+      
+      // 显示日志容器
+      const logContainer = document.getElementById(`${type}-log-container`);
+      const logContent = document.getElementById(`${type}-log-content`);
+      logContainer.style.display = 'block';
+      logContent.innerHTML = '';
+      
+      // 添加开始日志
+      addLogItem(type, 'info', `开始自动发送${type === 'normal' ? '普通' : '天成'}事件，共${events.length}个事件`);
+      
+      const interval = setInterval(() => {
+        if (currentIndex >= events.length) {
+          clearInterval(interval);
+          addLogItem(type, 'complete', `所有${type === 'normal' ? '普通' : '天成'}事件发送完成！`);
+          return;
+        }
+        
+        const event = events[currentIndex];
+        const timestamp = new Date().toLocaleTimeString();
+        
+        if (type === 'normal') {
+          if (window.jsBridge) {
+            window.jsBridge.postMessage(event.name, event.params);
+            addLogItem(type, 'success', `[${timestamp}] ✓ ${event.name} - ${event.params}`);
+          } else {
+            addLogItem(type, 'error', `[${timestamp}] ✗ ${event.name} - jsBridge对象不存在`);
+          }
+        } else {
+          if (window.Android) {
+            window.Android.eventTracker(event.name, event.params);
+            addLogItem(type, 'success', `[${timestamp}] ✓ ${event.name} - ${event.params}`);
+          } else {
+            addLogItem(type, 'error', `[${timestamp}] ✗ ${event.name} - Android对象不存在`);
+          }
+        }
+        
+        currentIndex++;
+      }, 2000);
+    }
+    
+    // 添加日志项
+    function addLogItem(type, level, message) {
+      const logContent = document.getElementById(`${type}-log-content`);
+      const logItem = document.createElement('div');
+      logItem.className = `log-item ${level}`;
+      logItem.textContent = message;
+      logContent.appendChild(logItem);
+      
+      // 自动滚动到底部
+      logContent.scrollTop = logContent.scrollHeight;
+    }
+    
+    // 清空日志
+    function clearLog(type) {
+      const logContainer = document.getElementById(`${type}-log-container`);
+      const logContent = document.getElementById(`${type}-log-content`);
+      logContent.innerHTML = '';
+    //   logContainer.style.display = 'none';
+    }
+
+    // 页面加载完成后生成按钮
+    document.addEventListener('DOMContentLoaded', generateEventButtons);
+
     function showTab(tab) {
       // 切换内容区域
       document.getElementById("tab-normal").classList.remove("active");
@@ -151,7 +421,6 @@
     	document.getElementById("eventValue").value = '{"amount":100,"currency":"USD"}';
     }
 
-
     function sendTcEvent() {
       if (window.Android) {
 	      const name = document.getElementById("tcEventName").value.trim();
@@ -166,7 +435,15 @@
     function fillTCAoumtParam(){
     	document.getElementById("tcEventValue").value = '{"af_revenue":1000,"revenue":1000,"currency":"USD"}';
     }
+    
+    function autoSendAllEvents() {
+      autoSendEvents('normal');
+    }
+
+    function autoSendAllTcEvents() {
+      autoSendEvents('tc');
+    }
   </script>
 
 </body>
-</html>
+</html> 
