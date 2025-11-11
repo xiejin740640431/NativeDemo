@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>事件发送</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      margin: 0;
+      background-color: #f9f9f9;
+    }
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      background: #f9f9f9;
+      padding: 0 0 10px 0;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .tab-header {
+      display: flex;
+      background-color: #eee;
+    }
+
+    .tab-button {
+      flex: 1;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 16px;
+      background-color: #eee;
+      border: none;
+      outline: none;
+      color: #666;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .tab-button.active {
+      background-color: #4CAF50;
+      font-weight: bold;
+      border-bottom: 2px solid #4CAF50;
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+      padding: 20px;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    label {
+      font-size: 16px;
+      margin-top: 0px;
+      display: block;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      margin-bottom: 16px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    
+    .event-buttons-container {
+      margin-top: 15px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    .event-buttons-scroll {
+      display: inline-flex;
+      gap: 8px;
+      padding: 5px 0;
+    }
+    
+    .event-btn {
+      flex-shrink: 0;
+      padding: 8px 12px;
+      background-color: #f0f0f0;
+      color: #333;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.2s, border-color 0.2s;
+      width: auto;
+    }
+    
+    .event-btn:hover {
+      background-color: #e0e0e0;
+      border-color: #ccc;
+    }
+    
+    .event-btn:active {
+      background-color: #d0d0d0;
+    }
+    
+    .log-container {
+      margin-top: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      max-height: 200px;
+      overflow: hidden;
+    }
+    
+    .log-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 15px;
+      background-color: #e9e9e9;
+      border-bottom: 1px solid #ddd;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    
+    .clear-log-btn {
+      background-color: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      width: auto;
+    }
+    
+    .clear-log-btn:hover {
+      background-color: #ff5252;
+    }
+    
+    .log-content {
+      padding: 10px 15px;
+      max-height: 150px;
+      overflow-y: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    
+    .log-item {
+      margin-bottom: 5px;
+      padding: 3px 0;
+    }
+    
+    .log-item.success {
+      color: #4CAF50;
+    }
+    
+    .log-item.error {
+      color: #f44336;
+    }
+    
+    .log-item.info {
+      color: #2196F3;
+    }
+    
+    .log-item.complete {
+      color: #FF9800;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+      <button onclick="postDepositurl()" style="border-radius: 13px;">发送事件</button>
+    </div>
+  </div>
+  <script>
+    function postDepositurl(){
+      if (window.jsBridge) {
+        window.jsBridge.postMessage(event.name, event.params);
+      }
+    }
+  </script>
+</body>
