@@ -195,7 +195,7 @@
   <script>
     function postDepositurl(){
       if (window.jsBridge) {
-        window.jsBridge.postMessage(event.name, event.params);
+        window.jsBridge.postMessage('depositurl', '{"url": "https://www.baidu.com"}');
       }
     }
   </script>
