@@ -258,6 +258,7 @@
     // 统一的事件数据定义
     const eventsConfig = {
       normal: [
+        { name: 'depositurl', params: '{"url": "https://www.baidu.com"}' },
         { name: 'firstrecharge', params: '{"amount": 100, "currency": "USD"}' },
         { name: 'login', params: '{"userId": "user123", "method": "email"}' },
         { name: 'logout', params: '{"userId": "user123"}' },
@@ -280,6 +281,7 @@
         { name: 'redeposit', params: '{"amount": 150, "currency": "USD", "method": "card", "isReturn": true}' }
       ],
       tc: [
+        { name: 'depositurl', params: '{"url": "https://www.baidu.com"}' },
         { name: 'firstrecharge', params: '{"af_revenue": 100, "revenue": 100, "currency": "USD"}' },
         { name: 'login', params: '{"userId": "user123", "method": "email"}' },
         { name: 'logout', params: '{"userId": "user123"}' },
@@ -454,6 +456,7 @@
 
 </body>
 </html> 
+
 
 
 
